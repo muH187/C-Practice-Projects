@@ -4,7 +4,6 @@
 
 int guess;
 int answer;
-int score;
 int attempt;
 
 int main(){
