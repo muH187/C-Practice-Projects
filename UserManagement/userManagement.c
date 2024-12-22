@@ -1,11 +1,12 @@
 #include<stdio.h>
-
+#include<string.h>
 
 #define USER_MAX 10
+#define CREDENTIAL_LENGTH 30
 
 typedef struct {
-    char username[30];
-    char password[30];
+    char username[CREDENTIAL_LENGTH];
+    char password[CREDENTIAL_LENGTH];
 } User;
 
 User users[USER_MAX];
@@ -16,6 +17,8 @@ int userCount = 0;
 
 void registerUser();
 int loginUser();
+void fixFgets(char*);
+void password(char*);
 
 int main() {
 
@@ -50,9 +53,30 @@ int main() {
 }
 
 void registerUser() {
-    printf("Dummy registeration for now.\n");
+
+    if(userCount == USER_MAX) {
+        printf("Maximum %d are supported. No more registerations are allowed!!!\n", USER_MAX);
+        return;
+    }
+
+    int newIndex = userCount;
+
+    printf("Register a new user.\n");
+    printf("Enter your username: ");
+    fgets(users[newIndex].username, CREDENTIAL_LENGTH, stdin);
+    fixFgets(users[newIndex].username);
+
+
+
+    userCount++;
+
 }
 
 int loginUser() {
     return -1;
 }
+
+void fixFgets(char* string) {
+    int index = strcspn(string, "\n");
+    string[index] = '\0';
+}   
