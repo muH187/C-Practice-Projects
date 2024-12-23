@@ -18,7 +18,7 @@ int userCount = 0;
 void registerUser();
 int loginUser();
 void fixFgets(char*);
-void password(char*);
+void inputPassword(char*);
 
 int main() {
 
@@ -27,6 +27,7 @@ int main() {
 
         printf("Select an option: ");
         scanf("%d", &choice);
+        getchar();
 
         switch(choice) {
             case 1:
@@ -61,18 +62,31 @@ void registerUser() {
 
     int newIndex = userCount;
 
-    printf("Register a new user.\n");
+    printf("\nRegister a new user.\n");
     printf("Enter your username: ");
     fgets(users[newIndex].username, CREDENTIAL_LENGTH, stdin);
     fixFgets(users[newIndex].username);
-
-
+    inputPassword(users[newIndex].password);
 
     userCount++;
+
+    printf("Registeration successful.");
 
 }
 
 int loginUser() {
+    char username[CREDENTIAL_LENGTH], password[CREDENTIAL_LENGTH];
+
+    printf("Enter your username: ");
+    fgets(username, CREDENTIAL_LENGTH, stdin);
+    fixFgets(username);
+    inputPassword(password);
+
+    for(int i = 0; i < userCount; i++) {
+        if(strcmp(username, users[i].username) == 0 && strcmp(password, users[i].password)) {
+            return i;
+        }
+    }
     return -1;
 }
 
@@ -80,3 +94,9 @@ void fixFgets(char* string) {
     int index = strcspn(string, "\n");
     string[index] = '\0';
 }   
+
+void inputPassword(char* password) {
+    printf("Enter password: ");
+    fgets(password, CREDENTIAL_LENGTH, stdin);
+    fixFgets(password);
+}
