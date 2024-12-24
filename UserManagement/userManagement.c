@@ -43,6 +43,7 @@ int main() {
                 break;
             case 3:
                 printf("Exiting the Program.\n");
+                return 0;
                 break;
             default:
                 printf("Invalid input please try again!\n\n");
@@ -56,7 +57,7 @@ int main() {
 void registerUser() {
 
     if(userCount == USER_MAX) {
-        printf("Maximum %d are supported. No more registerations are allowed!!!\n", USER_MAX);
+        printf("Maximum %d users are supported. No more registerations are allowed!!!\n", USER_MAX);
         return;
     }
 
