@@ -39,15 +39,14 @@ int main() {
                 checkBalance();
                 break;
             case 5:
-                printf("Closing the Bank...\n");
+                printf("\nClosing the Bank...\n");
                 return 0;
                 break;
             default:
-                printf("Invalid input! Please choose correctly...\n");
+                printf("\nInvalid input! Please choose correctly...\n");
                 break;
         }
     }
-    
 
     return 0;
 }
@@ -58,7 +57,7 @@ void createAccount() {
     FILE* file;
     file = fopen(ACCOUNT_FILE, "ab+");
     if(file == NULL) {
-        printf("Unable to open the file!!!\n");
+        printf("\nUnable to open the file!!!\n");
         return;
     }
 
@@ -82,15 +81,73 @@ void createAccount() {
     printf("\nAccount created successfully...\n");
 }
 void depositMoney() {
-    printf("Depositing money\n");
+    FILE *file;
+    file = fopen(ACCOUNT_FILE, "rb+");
+
+    if(file == NULL) {
+        printf("\nUnable to open account file.\n");
+        return;
+    }
+
+    int accNo;
+    float money;
+    printf("Enter your account number: ");
+    scanf("%d", &accNo);
+
+    printf("Enter amount to deposit: ");
+    scanf("%f", &money);
+
+    Account acc_r;
+
+    while(fread(&acc_r, sizeof(acc_r), 1, file)) {
+        if(acc_r.accountNo == accNo){
+            acc_r.balance += money;
+            fseek(file, -sizeof(acc_r), SEEK_CUR);
+            fwrite(&acc_r, sizeof(acc_r), 1, file);
+            fclose(file);
+            printf("\nSuccessfully deposited Rs.%.2f. New balance is %.2f\n", money, acc_r.balance);
+            return;
+        }
+    }
+    fclose(file);
+    printf("\nAccount NO:%d was not found in our records.\n", accNo);
 }
 void withdrawMoney() {
-    printf("withdrawing money\n");
+    FILE *file;
+    file = fopen(ACCOUNT_FILE, "rb+");
+    if(file == NULL) {
+        printf("Unable to find the file.\n");
+    }
+
+    int accNo;
+    float money;
+    printf("Enter your account no: ");
+    scanf("%d", &accNo);
+    printf("Enter amount to withdraw: ");
+    scanf("%f", &money);
+
+    Account acc_r;
+    while(fread(&acc_r, sizeof(acc_r), 1, file)) {
+        if(acc_r.accountNo == accNo) {
+            if(acc_r.balance >= money) {
+                acc_r.balance -= money;
+                fseek(file, -sizeof(acc_r), SEEK_CUR);
+                fwrite(&acc_r, sizeof(acc_r), 1, file);
+                printf("\nSuccessfully withdrawn Rs.%.2f Remaining balance is Rs.%.2f\n", money, acc_r.balance);
+            } else {
+                printf("\nYou have insufficient balance.\n");
+            }
+            fclose(file);
+            return;
+        }
+    }
+    fclose(file);
+    printf("\nAccount NO:%d was not found in our records.\n", accNo);
 }
 void checkBalance() {
     FILE *file = fopen(ACCOUNT_FILE, "rb");
     if(file == NULL) {
-        printf("Unable to find the file!!!\n");
+        printf("\nUnable to find the file!!!\n");
         return;
     }
  
@@ -102,14 +159,13 @@ void checkBalance() {
 
     while(fread(&acc_read, sizeof(acc_read), 1, file)){
         if(acc_read.accountNo == acc_no) {
-            printf("Your account balance is Rs.%.2f\n", acc_read.balance);    
+            printf("\nYour account balance is Rs.%.2f\n", acc_read.balance);    
             fclose(file);
             return;
         }
     }
     fclose(file);
-    printf("Account NO:%d was not found in our directory...\n", acc_no);
-    
+    printf("\nAccount NO:%d was not found in our directory...\n", acc_no);
 }
 
 void fixFgets(char* string) {
