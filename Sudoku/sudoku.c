@@ -3,6 +3,7 @@
 
 int validMove(int sudoku[9][9], int row, int col, int value);
 void printSudoku(int sudoku[9][9]);
+int solvePuzzle(int sudoku[9][9], int row, int col);
 
 int sudoku[9][9] = {
     {3,0,0,0,2,0,0,7,0},
@@ -22,6 +23,38 @@ int main() {
     printf("\nOriginal Puzzle.");
     printSudoku(sudoku);
 
+    if(solvePuzzle(sudoku, 0, 0)) {
+        printf("The sudoku has been solved\n");
+    } else {
+        printf("The sudoku is not solvable\n");
+    }
+
+    return 0;
+}
+
+int solvePuzzle(int sudoku[9][9], int row, int col) {
+    if(col == 9) {
+        if(row == 8) {
+            return 1;
+        }
+        col = 0;
+        row++;
+    }
+
+    if(sudoku[row][col] > 0) {
+        return solvePuzzle(sudoku, row, col + 1);
+    }
+
+    for(int i = 1; i <= 9; i++) {
+        if(validMove(sudoku, row, col, i)) {
+            sudoku[row][col] = i;
+            if(solvePuzzle(sudoku, row, col + 1)) {
+                return 1;
+            }
+            sudoku[row][col] = 0;
+        }
+
+    }
     return 0;
 }
 
